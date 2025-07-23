@@ -8,13 +8,13 @@ A PostgreSQL Foreign Data Wrapper (FDW) that integrates with OpenAI's API to gen
 
 ---
 
-## 🚀 Key Features
+## 🚀 Features
 
-- Maps AI-generated content to real PostgreSQL schemas
-- Flexible prompt-driven data generation
-- Supports GPT-3.5, GPT-4
-- Robust error handling and logging
-- Production-ready via Multicorn2
+- Integrates with OpenAI Chat Completion API (e.g., `gpt-3.5-turbo`, `gpt-4`)
+- Ensures OpenAI returns data matching your table structure
+- Converts OpenAI JSON responses into PostgreSQL rows with type checks
+- Configurable prompt, model, temperature, max tokens, and max rows
+- Logs warnings and errors in PostgreSQL logs
 
 ---
 
@@ -66,16 +66,16 @@ SELECT * FROM users_ai LIMIT 5;
 
 ---
 
-## ⚙️ Configuration Options
+## 🛠️ Configuration Options
 
-| Option         | Description                   | Default         | Example                           |
-|----------------|-------------------------------|-----------------|-----------------------------------|
-| `api_key`      | OpenAI API key                | *Required*      | `sk-abc123...`                    |
-| `prompt`       | Data generation prompt        | *Required*      | `Generate customer data`          |
-| `model`        | OpenAI model                  | `gpt-3.5-turbo` | `gpt-4`                           |
-| `max_tokens`   | Token limit                   | `2000`          | `3000`                            |
-| `temperature`  | Creativity (0.0-1.0)          | `0.7`           | `0.5`                             |
-| `max_rows`     | Max rows returned             | `100`           | `50`                              |
+| Option        | Description                    | Default         | Example          |
+| ------------- | ------------------------------ | --------------- | ---------------- |
+| `api_key`     | Your OpenAI API key (required) | *none*          | `sk-abc123...`   |
+| `prompt`      | Prompt text to generate data   | *none*          | `Generate users` |
+| `model`       | OpenAI chat model name         | `gpt-3.5-turbo` | `gpt-4`          |
+| `max_tokens`  | Maximum tokens in response     | `2000`          | `3000`           |
+| `temperature` | Controls creativity (0.0-1.0)  | `0.7`           | `0.5`            |
+| `max_rows`    | Maximum rows to return         | `100`           | `50`             |
 
 ---
 
@@ -98,6 +98,14 @@ SELECT * FROM users_ai LIMIT 5;
 ## 🤝 Contributing
 
 PRs are welcome! Clone the repo, create a feature branch, and submit your improvements.
+
+---
+
+## ⚠️ Limitations
+
+- WHERE and ORDER BY clauses are evaluated by PostgreSQL, not by OpenAI — data is generated first, then filtered/sorted locally
+- API keys in FDW options are visible to users with schema access — keep keys secure
+- Relies on OpenAI Chat Completion API responses as valid JSON arrays
 
 ---
 
